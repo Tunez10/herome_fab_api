@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9f9f9;
+        padding: 30px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        overflow: hidden;
+      }
+      .header {
+        text-align: center;
+        background-color: #000000;
+        padding: 20px;
+      }
+      .logo {
+        max-width: 140px;
+      }
+      .content {
+        padding: 25px;
+        color: #333333;
+      }
+      .footer {
+        text-align: center;
+        font-size: 13px;
+        color: #777777;
+        padding: 15px;
+      }
+      .highlight {
+        color: #ff6600;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="{{ logo_url }}" alt="Herome Fab Logo" class="logo"/>
+
+      </div>
+      <div class="content">
+        {{ body_content|safe }}
+      </div>
+      <div class="footer">
+        &copy; {{ year }} Herome_Fab. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
