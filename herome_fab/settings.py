@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 
     "userapp",
     "products",
-    "paymentapp",
+    
 ]
 
 MIDDLEWARE = [
