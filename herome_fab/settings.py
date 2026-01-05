@@ -103,14 +103,12 @@ WSGI_APPLICATION = 'herome_fab.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=env(
-            "DATABASE_URL",
-            default=f"postgres://{env('DB_USER')}:{env('DB_PASSWORD')}@{env('DB_HOST')}:{env('DB_PORT')}/{env('DB_NAME')}"
-        ),
+        default=env("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=False,
+        ssl_require=True,
     )
 }
+
 
 
 ADMIN_EMAIL = env("ADMIN_EMAIL")
