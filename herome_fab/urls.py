@@ -23,7 +23,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/users/", include("userapp.urls")),
     path("api/products/", include("products.urls")),
-    path('api/payments/', include('paymentapp.urls')),
 
 
     # Swagger endpoints
