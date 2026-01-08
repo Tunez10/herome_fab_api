@@ -102,11 +102,16 @@ WSGI_APPLICATION = 'herome_fab.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default=f"postgres://{env('DB_USER')}:{env('DB_PASSWORD')}@{env('DB_HOST')}:{env('DB_PORT')}/{env('DB_NAME')}"
+    "default": dj_database_url.config(
+        default=env(
+            "DATABASE_URL",
+            default=f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+        ),
+        conn_max_age=600,
+        ssl_require=not DEBUG,
     )
 }
+
 
 
 
