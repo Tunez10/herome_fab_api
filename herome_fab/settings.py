@@ -35,7 +35,7 @@ DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
-    default=["127.0.0.1", "localhost", "herome-fab-api.herokuapp.com"]
+    default=["127.0.0.1", "localhost", "herome-fab-api-985031da9a39.herokuapp.com"]
 )
 
 
