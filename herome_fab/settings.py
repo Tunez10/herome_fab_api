@@ -206,10 +206,7 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-FRONTEND_URL = env(
-    "FRONTEND_URL",
-    default="http://localhost:5173"
-)
+
 
 
 CACHES = {
