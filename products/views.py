@@ -130,9 +130,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         cached = cache.get(cache_key)
         if cached:
-            print(f"🚀 PRODUCTS LIST SERVED FROM CACHE → {cache_key}")
             return Response(cached)
-        print(f"🐌 PRODUCTS LIST HIT DATABASE → {cache_key}")
 
         qs = self.queryset
         if category:
@@ -141,12 +139,17 @@ class ProductViewSet(viewsets.ModelViewSet):
             qs = qs.filter(name__icontains=search)
 
         page = self.paginate_queryset(qs)
-        serializer = self.get_serializer(page, many=True)
-        response = self.get_paginated_response(serializer.data)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            response = self.get_paginated_response(serializer.data)
+        else:
+            serializer = self.get_serializer(qs, many=True)
+            response = Response(serializer.data)
 
         cache.set(cache_key, response.data, 60 * 5)
-        print(f"✅ PRODUCTS LIST CACHED → {cache_key}")
         return response
+
 
 
 
