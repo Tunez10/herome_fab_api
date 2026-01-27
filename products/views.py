@@ -49,7 +49,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
-
     def list(self, request, *args, **kwargs):
         cache_key = "categories:list"
 
@@ -57,9 +56,19 @@ class CategoryViewSet(viewsets.ModelViewSet):
         if cached:
             return Response(cached)
 
-        response = super().list(request, *args, **kwargs)
+        qs = self.queryset
+        page = self.paginate_queryset(qs)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            response = self.get_paginated_response(serializer.data)
+        else:
+            serializer = self.get_serializer(qs, many=True)
+            response = Response(serializer.data)
+
         cache.set(cache_key, response.data, 60 * 30)
         return response
+
 
 
 # Products
