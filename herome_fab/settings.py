@@ -18,6 +18,9 @@ import environ
 import dj_database_url
 import os
 import ssl
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -62,6 +65,8 @@ INSTALLED_APPS = [
 
     "userapp",
     "products",
+    "cloudinary",
+    "cloudinary_storage",
     
 ]
 
@@ -171,12 +176,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
-SITE_URL = "http://127.0.0.1:8000"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+SITE_URL = "https://herome-fab-api-985031da9a39.herokuapp.com"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True,
+)
+
+
+
+
+
+
 
 
 # Default primary key field type
