@@ -41,9 +41,14 @@ from django.utils import timezone
 from django.core.cache import cache
 
 
-
-
 # Categories
+
+def get_category_cache_version():
+    return cache.get_or_set("categories:version", 1)
+
+def bump_category_cache_version():
+    cache.incr("categories:version")
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -51,7 +56,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         page_number = request.query_params.get("page", 1)
-        cache_key = f"categories:list:page:{page_number}"
+        version = get_category_cache_version()
+
+        cache_key = f"categories:v{version}:page:{page_number}"
 
         cached = cache.get(cache_key)
         if cached:
@@ -70,23 +77,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
         cache.set(cache_key, response.data, 60 * 5)
         return response
 
-    
-    
-    def _clear_category_cache(self):
-        for key in cache.keys("categories:list:*"):
-            cache.delete(key)
-
     def perform_create(self, serializer):
         serializer.save()
-        self._clear_category_cache()
+        bump_category_cache_version()
 
     def perform_update(self, serializer):
         serializer.save()
-        self._clear_category_cache()
+        bump_category_cache_version()
 
     def perform_destroy(self, instance):
         instance.delete()
-        self._clear_category_cache()
+        bump_category_cache_version()
+
 
 
 
