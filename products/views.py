@@ -66,8 +66,21 @@ class CategoryViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(qs, many=True)
             response = Response(serializer.data)
 
-        cache.set(cache_key, response.data, 60 * 30)
+        cache.set(cache_key, response.data, 60 * 5)
         return response
+    
+    
+    def perform_create(self, serializer):
+        serializer.save()
+        cache.delete("categories:list")
+
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.delete("categories:list")
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        cache.delete("categories:list")
 
 
 
