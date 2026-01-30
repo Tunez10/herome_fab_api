@@ -41,8 +41,9 @@ class Product(models.Model):
     size_guide = models.TextField(blank=True)
     sizes = ArrayField(models.CharField(max_length=10), default=list, blank=True)
     
-    image1 = models.ImageField(upload_to="products/", null=True, blank=True)
-    image2 = models.ImageField(upload_to="products/", null=True, blank=True)  # 👈 added second image field
+    image1 = models.ImageField(null=True, blank=True)
+    image2 = models.ImageField(null=True, blank=True)
+
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
