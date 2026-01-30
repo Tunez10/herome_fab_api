@@ -4,6 +4,8 @@ from django.utils.text import slugify
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import generate_unique_slug
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
 
 from django.contrib.auth import get_user_model
 
@@ -41,8 +43,10 @@ class Product(models.Model):
     size_guide = models.TextField(blank=True)
     sizes = ArrayField(models.CharField(max_length=10), default=list, blank=True)
     
-    image1 = models.ImageField(null=True, blank=True)
-    image2 = models.ImageField(null=True, blank=True)
+
+    image1 = models.ImageField(storage=MediaCloudinaryStorage(), null=True, blank=True)
+    image2 = models.ImageField(storage=MediaCloudinaryStorage(), null=True, blank=True)
+
 
     
     created_at = models.DateTimeField(auto_now_add=True)
