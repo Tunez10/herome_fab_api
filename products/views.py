@@ -158,6 +158,17 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         cache.set(cache_key, response.data, 60 * 5)
         return response
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()  # get the product being deleted
+        self.perform_destroy(instance)  # actually delete it from the database
+
+        # Clear caches
+        cache.delete(f"product:{instance.id}")      # delete individual product cache
+        cache.delete_pattern("products:*")          # delete any product list caches
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 
