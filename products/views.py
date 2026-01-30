@@ -44,43 +44,58 @@ from django.core.cache import cache
 
 
 # Categories
+from django.core.cache import cache
+from rest_framework import viewsets
+from rest_framework.response import Response
+
+from .models import Category
+from .serializers import CategorySerializer
+from .permissions import IsAdminOrReadOnly
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
+    def get_queryset(self):
+        return Category.objects.all().order_by("id")
+
     def list(self, request, *args, **kwargs):
-        cache_key = "categories:list"
+        page = request.query_params.get("page", "all")
+        cache_key = f"categories:list:{page}"
 
         cached = cache.get(cache_key)
-        if cached:
+        if cached is not None:
             return Response(cached)
 
-        qs = self.queryset
-        page = self.paginate_queryset(qs)
+        queryset = self.get_queryset()
+        page_obj = self.paginate_queryset(queryset)
 
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
+        if page_obj is not None:
+            serializer = self.get_serializer(page_obj, many=True)
             response = self.get_paginated_response(serializer.data)
-        else:
-            serializer = self.get_serializer(qs, many=True)
-            response = Response(serializer.data)
+            cache.set(cache_key, response.data, 60 * 5)
+            return response
 
-        cache.set(cache_key, response.data, 60 * 5)
-        return response
-    
-    
+        serializer = self.get_serializer(queryset, many=True)
+        cache.set(cache_key, serializer.data, 60 * 5)
+        return Response(serializer.data)
+
+    def clear_category_cache(self):
+        cache.clear()
+
     def perform_create(self, serializer):
         serializer.save()
-        cache.delete("categories:list")
+        self.clear_category_cache()
 
     def perform_update(self, serializer):
         serializer.save()
-        cache.delete("categories:list")
+        self.clear_category_cache()
 
     def perform_destroy(self, instance):
         instance.delete()
-        cache.delete("categories:list")
+        self.clear_category_cache()
+
 
 
 
