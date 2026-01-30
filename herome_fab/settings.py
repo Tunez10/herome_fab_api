@@ -184,14 +184,26 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
+import cloudinary
+
+# First, try to use CLOUDINARY_URL if available
+cloudinary_url = os.environ.get("CLOUDINARY_URL")
+
+if cloudinary_url:
+    # This works for both local and Heroku if CLOUDINARY_URL is defined
+    cloudinary.config(cloudinary_url=cloudinary_url, secure=True)
+else:
+    # Fallback: use separate values (from .env or Heroku config vars)
+    cloudinary.config(
+        cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.environ.get("CLOUDINARY_API_KEY"),
+        api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+        secure=True,
+    )
 
 
-cloudinary.config(
-    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.environ.get("CLOUDINARY_API_KEY"),
-    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
-    secure=True,
-)
+
+
 
 
 
