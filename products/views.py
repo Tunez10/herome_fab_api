@@ -71,14 +71,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
 
-        # ✅ Clear category list cache
+        # Clear category list cache
         cache.delete("categories:list")
 
-        # ✅ Clear any product list caches related to this category
-        cache.delete_pattern(f"products:list:cat={instance.slug}:*")
-        cache.delete_pattern("products:*")  # fallback for any other product lists
+        # Clear **all product list caches**
+        cache.delete_pattern("products:list:*")
+        cache.delete_pattern("product:*")  # also individual product detail caches
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 
