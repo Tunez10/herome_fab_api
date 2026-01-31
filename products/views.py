@@ -51,12 +51,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         cache_key = "categories:list"
+
         cached = cache.get(cache_key)
         if cached:
             return Response(cached)
 
         qs = self.queryset
         page = self.paginate_queryset(qs)
+
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             response = self.get_paginated_response(serializer.data)
@@ -66,21 +68,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
         cache.set(cache_key, response.data, 30)
         return response
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-
-        # Clear category list cache
-        cache.delete("categories:list")
-
-        # Clear **all product list caches**
-        cache.delete_pattern("products:list:*")
-        cache.delete_pattern("product:*")  # also individual product detail caches
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 
 
 
