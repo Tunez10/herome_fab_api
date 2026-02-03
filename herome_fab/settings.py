@@ -184,7 +184,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-import cloudinary
+
 
 # First, try to use CLOUDINARY_URL if available
 cloudinary_url = os.environ.get("CLOUDINARY_URL")

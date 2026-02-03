@@ -207,7 +207,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         response = super().retrieve(request, *args, **kwargs)
 
-        cache.set(cache_key, response.data, 60 * 10)
+        cache.set(cache_key, response.data, 60 * 5)
         return response
 
 
