@@ -117,9 +117,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        cache.delete(f"product:{instance.id}")
-        cache.delete_pattern("products:*")
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
